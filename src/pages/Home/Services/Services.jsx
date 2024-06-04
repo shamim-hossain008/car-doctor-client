@@ -5,7 +5,7 @@ const Services = () => {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
-    fetch("Services.json")
+    fetch(`${import.meta.env.VITE_BASE_URL}/services`)
       .then((res) => res.json())
       .then((data) => setServices(data));
   }, []);
