@@ -12,7 +12,7 @@ const Bookings = () => {
     fetch(url)
       .then((res) => res.json())
       .then((data) => setBooking(data));
-  }, []);
+  }, [url]);
 
   const handleDelete = (id) => {
     // proceed its optional we are use Sweet alert
@@ -33,6 +33,30 @@ const Bookings = () => {
           }
         });
     }
+  };
+
+  const handleBookingConfirm = (id) => {
+    fetch(`${import.meta.env.VITE_BASE_URL}/bookings/${id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ status: "Confirm" }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.modifiedCount > 0) {
+          // update state
+          //   get other all
+          const remaining = booking.filter((item) => item._id !== id);
+          //get only one which one you update
+          const updated = booking.find((item) => item._id === id);
+          updated.status;
+          const newBookings = [updated, ...remaining];
+          setBooking(newBookings);
+        }
+      });
   };
 
   return (
@@ -64,6 +88,7 @@ const Bookings = () => {
                 key={item._id}
                 item={item}
                 handleDelete={handleDelete}
+                handleBookingConfirm={handleBookingConfirm}
               ></BookingRow>
             ))}
           </tbody>
