@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import img from "../../../assets/images/login/login.svg";
@@ -8,10 +9,7 @@ const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-
-  
   const handleLogin = (e) => {
-
     e.preventDefault();
     const form = e.target;
     const password = form.password.value;
@@ -20,9 +18,21 @@ const Login = () => {
     console.log("From log in page", email, password);
     signIn(email, password)
       .then((result) => {
-        const user = result.user;
-        console.log(user);
-        navigate(location?.state ? location?.state : "/");
+        const loggedInUser = result.user;
+        console.log(loggedInUser);
+        const user = { email };
+
+        // get access token
+        axios
+          .post(`${import.meta.env.VITE_BASE_URL}/jwt`, user, {
+            withCredentials: true,
+          })
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.success) {
+              navigate(location?.state ? location?.state : "/");
+            }
+          });
       })
       .catch((error) => console.log(error));
   };

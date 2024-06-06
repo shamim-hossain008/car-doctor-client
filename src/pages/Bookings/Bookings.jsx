@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Providers/AuthProvider";
 import BookingRow from "./BookingRow";
@@ -9,9 +10,15 @@ const Bookings = () => {
   const url = `${import.meta.env.VITE_BASE_URL}/bookings?email=${user?.email}`;
 
   useEffect(() => {
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => setBooking(data));
+    // try with axios
+    axios.get(url, { withCredentials: true }).then((res) => {
+      setBooking(res.data);
+    });
+
+    // 1st option
+    // fetch(url)
+    //   .then((res) => res.json())
+    //   .then((data) => setBooking(data));
   }, [url]);
 
   const handleDelete = (id) => {
