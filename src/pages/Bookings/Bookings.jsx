@@ -1,25 +1,29 @@
-import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Providers/AuthProvider";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import BookingRow from "./BookingRow";
 
 const Bookings = () => {
   const { user } = useContext(AuthContext);
   const [booking, setBooking] = useState([]);
+  const axiosSecure = useAxiosSecure();
 
-  const url = `${import.meta.env.VITE_BASE_URL}/bookings?email=${user?.email}`;
+  // const url = `${import.meta.env.VITE_BASE_URL}/bookings?email=${user?.email}`;
+  // use hook
+  const url = `/bookings?email=${user?.email}`;
 
   useEffect(() => {
     // try with axios
-    axios.get(url, { withCredentials: true }).then((res) => {
-      setBooking(res.data);
-    });
+    // axios.get(url, { withCredentials: true }).then((res) => {
+    //   setBooking(res.data);
+    // });
+    axiosSecure.get(url).then((res) => setBooking(res.data));
 
     // 1st option
     // fetch(url)
     //   .then((res) => res.json())
     //   .then((data) => setBooking(data));
-  }, [url]);
+  }, [url, axiosSecure]);
 
   const handleDelete = (id) => {
     // proceed its optional we are use Sweet alert

@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -33,10 +34,30 @@ const AuthProvider = ({ children }) => {
   //   The recommended way to get the current user is by setting an observer on the Auth object:
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      const userEmail = currentUser?.email || user?.email;
+      const loggedUser = { email: userEmail };
       setUser(currentUser);
 
       console.log("current user", currentUser);
       setLoading(false);
+      // if user exists then issue a token
+      if (currentUser) {
+        axios
+          .post(`${import.meta.env.VITE_BASE_URL}/jwt`, loggedUser, {
+            withCredential: true,
+          })
+          .then((res) => {
+            console.log("token response....", res.data);
+          });
+      } else {
+        axios
+          .post(`${import.meta.env.VITE_BASE_URL}/logOut`, loggedUser, {
+            withCredentials: true,
+          })
+          .then((res) => {
+            console.log(res.data);
+          });
+      }
     });
     return () => {
       return unsubscribe();
