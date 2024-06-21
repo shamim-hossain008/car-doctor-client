@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useServices from "../../../hooks/useServices";
 import ServicesCard from "./ServicesCard";
 
-const Services = () => {
-  const [services, setServices] = useState([]);
+// DRY --> DO not Repeat Yourself
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_BASE_URL}/services`)
-      .then((res) => res.json())
-      .then((data) => setServices(data));
-  }, []);
+const Services = () => {
+  // for toggle
+  const [asc, setAsc] = useState();
+  const services = useServices(asc);
 
   return (
     <div className="mt-4">
@@ -20,6 +19,9 @@ const Services = () => {
           humour, or randomize <br />
           words which don't look even slightly believable.
         </p>
+        <button className="btn btn-primary mt-4" onClick={() => setAsc(!asc)}>
+          {asc ? "Price: High To Low" : "Price: Low To High "}
+        </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
         {services.map((service) => (
