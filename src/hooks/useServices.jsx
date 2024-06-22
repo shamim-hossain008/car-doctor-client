@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { axiosSecure } from "./useAxiosSecure";
 
-const useServices = (asc) => {
+const useServices = (asc, search) => {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
@@ -9,10 +9,10 @@ const useServices = (asc) => {
     //   .then((res) => res.json())
     //   .then((data) => setServices(data));
 
-    axiosSecure(`/services?sort=${asc ? "asc" : "desc"}`).then((res) =>
-      setServices(res.data)
-    );
-  }, [asc]);
+    axiosSecure(
+      `/services?sort=${asc ? "asc" : "desc"} & search=${search}`
+    ).then((res) => setServices(res.data));
+  }, [asc, search]);
 
   return services;
 };
